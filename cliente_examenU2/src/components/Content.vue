@@ -3,10 +3,9 @@
     <b-row class="text-center">
       <b-col cols="9">
         <b-card
-          title="Card Title"
-          img-src="https://picsum.photos/600/300/?image=25"
-          img-alt="Image"
-          img-top
+          v-for="(libro, id) in libros"
+          :key="id"
+          :title="libro.titulo"
           tag="article"
           style="max-width: 20rem"
           class="mb-2"
@@ -18,11 +17,18 @@
             bulk of the card's content.
           </b-card-text>
         </b-card>
-
-        <edit-book :modalShow="modalShow"/>
+        <modal
+          :modalId="'Modal'"
+          :accion="accion"
+          :componenteActivo="componenteActivo"
+        />
       </b-col>
       <b-col>
-        <b-button class="mt-3" size="lg" variant="info" block
+        <b-button
+          class="mt-3"
+          size="lg"
+          variant="info"
+          @click="openModal('FormCreateBook', 'Registrar')"
           >Registrar</b-button
         >
         <div @drop="onDrop($event, 1)" @dragover.prevent @dragenter.prevent>
@@ -39,35 +45,56 @@
 </template>
 
 <script>
-import actionsButtons from "./ActionsButtons.vue";
-import EditBook from "./EditBook.vue";
+import Modal from "./Modal.vue";
+import FormCreateBook from "./FormCreateBook.vue";
+import FormEditBook from "./FormEditBook.vue";
+
+import ServiceBook from "../services/ServiceBook";
 
 export default {
   data() {
     return {
       libro: {},
-      modalShow: false,
+      libros: [],
+      accion: "Formulario",
+      componenteActivo: null,
     };
   },
   components: {
-    actionsButtons,
-    EditBook,
+    Modal,
+    FormCreateBook,
+    FormEditBook,
+  },
+  mounted() {
+    this.obtenerLibros();
   },
   methods: {
+    async obtenerLibros() {
+      try {
+        const data = await ServiceBook.obtenerLibros();
+        this.libros = data;
+      } catch (error) {
+        console.log(error);
+      }
+    },
     startDrag(evt, item) {
       evt.dataTransfer.dropEffect = "move";
       evt.dataTransfer.effectAllowed = "move";
     },
     onDrop(evt, action) {
       if (action === 1) {
-        this.modalShow = !this.modalShow;
+        this.openModal("FormCreateBook");
       } else if (action == 2) {
         alert("delete");
       }
+    },
+    openModal(componente, accion) {
+      this.componenteActivo = componente;
+      this.accion = accion;
+      this.$bvModal.show("Modal");
     },
   },
 };
 </script>
 
-<style>
-</style>
+<style></style>
