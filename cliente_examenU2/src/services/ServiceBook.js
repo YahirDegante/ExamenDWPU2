@@ -21,7 +21,43 @@ const obtenerLibros = async () => {
     }
 }
 
+const eliminarLibro = async (id) => {
+    try {
+        console.log('ID del libro a eliminar:', id);
+        const response = await axios.delete(API_URL + id);
+        console.log('Respuesta del servidor:', response);
+        return response.data;
+    } catch (error) {
+        console.error('Error al eliminar el libro:', error);
+    }
+};
+
+
+const getBooksByAutor = async () => {
+    try {
+        const response = await axios.get(API_URL + "orderAutor");
+        console.log(response);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+const getBooksByFecha = async () => {
+    try {
+        const response = await axios.get(API_URL + "orderFecha");
+        console.log(response);
+        return response.data;
+    } catch (error) {
+        console.error(error);
+    }
+};
+
+
 export default {
     registrarLibro,
-    obtenerLibros
+    obtenerLibros,
+    eliminarLibro,
+    getBooksByAutor,
+    getBooksByFecha
 };
