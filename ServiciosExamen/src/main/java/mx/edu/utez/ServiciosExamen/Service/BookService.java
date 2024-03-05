@@ -20,4 +20,27 @@ public class BookService {
         return repo.findAll();
     }
 
+    public void deleteBook(Long id){
+        repo.deleteById(id);
+    }
+
+    public Book updateBook(Long id, Book updateBook) {
+        Book existingBook = repo.findById(id).orElse(null);
+        if (existingBook != null) {
+            existingBook.setTitulo(updateBook.getTitulo());
+            existingBook.setAutor(updateBook.getAutor());
+            existingBook.setFechaPublicacion(updateBook.getFechaPublicacion());
+            return repo.save(existingBook);
+        }
+        return null;
+    }
+
+    public List<Book> getAllBooksOrderedByFechaPublicacionAsc() {
+        return repo.findByOrderByFechaPublicacionAsc();
+    }
+
+    public List<Book> getAllBooksOrderedByAutorAsc() {
+        return repo.findByOrderByAutorAsc();
+    }
+
 }
